@@ -16,13 +16,14 @@ export const BookProvider = ({ children }) => {
   const [triggerBKDetail, setTriggerBk] = useState({});
   const value = { bookData, setTrigger, bookDetail, setTriggerBk };
 
-
   useEffect(() => {
-    getCategories().then((response) => setBookData(response.data));
+    getCategories(0, null, "").then((response) =>
+      setBookData(response.data.result)
+    );
   }, [trigger]);
 
   useEffect(() => {
-    getBookDetail().then((response) => setBookDetail(response.data));
+    getBookDetail(0, null, "").then((response) => setBookDetail(response.data));
   }, [triggerBKDetail]);
 
   return <BookContext.Provider value={value}>{children}</BookContext.Provider>;

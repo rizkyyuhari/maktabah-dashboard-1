@@ -5,6 +5,17 @@ import * as RiIcons from "react-icons/ri";
 
 export const SidebarData = [
   {
+    title: "Manipulasi",
+    iconClosed: <RiIcons.RiArrowDownSFill />,
+    iconOpened: <RiIcons.RiArrowUpSFill />,
+    subNav: [
+      {
+        title: "Kategori Buku",
+        path: "/",
+      },
+    ],
+  },
+  {
     title: "Tambah",
     icon: <AiIcons.AiFillFileAdd />,
     iconClosed: <RiIcons.RiArrowDownSFill />,
@@ -13,19 +24,19 @@ export const SidebarData = [
     subNav: [
       {
         title: "Kategori Buku",
-        path: "/kategori-buku",
+        path: "/tambah/kategori-buku",
       },
       {
         title: "Sub Kategori Buku",
-        path: "/sub-kategori-buku",
+        path: "/tambah/sub-kategori-buku",
       },
       {
         title: "Buku",
-        path: "/buku",
+        path: "/tambah/buku",
       },
       {
         title: "Isi Konten Buku",
-        path: "/konten-buku",
+        path: "/tambah/konten-buku",
       },
     ],
   },

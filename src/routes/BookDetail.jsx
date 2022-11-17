@@ -2,7 +2,6 @@ import { useContext, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { BookContext } from "../components/context/BookContext";
 import { addBookDetail } from "../network/lib/book-endpoint";
-import "./styles.css";
 import Swal from "sweetalert2";
 
 const defaultValue = {

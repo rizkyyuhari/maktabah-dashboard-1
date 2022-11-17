@@ -2,7 +2,7 @@ import { useContext, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { BookContext } from "../components/context/BookContext";
-import { addSubCategories } from "../network/lib/book-endpoint";
+import { addSubCategories, getCategories } from "../network/lib/book-endpoint";
 
 const defaultValue = {
   subKategori: "",
@@ -12,7 +12,7 @@ const SubKategoriBuku = () => {
   const [forms, setForms] = useState(defaultValue);
   const [errors, setErrors] = useState({});
   const { bookData, setTrigger } = useContext(BookContext);
-
+  console.log("bookdata", bookData);
   const onChange = (e) => {
     const { name, value } = e.target;
     setForms({
