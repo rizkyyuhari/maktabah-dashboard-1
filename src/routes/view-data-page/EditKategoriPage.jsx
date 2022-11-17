@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import {
-  deleteKategori,
-  getKategoriList,
-} from "../../network/lib/book-endpoint";
+import { deleteKategori, getCategories } from "../../network/lib/book-endpoint";
 import ReactPaginate from "react-paginate";
 import "./coba.css";
 import { Link, useNavigate } from "react-router-dom";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import Swal from "sweetalert2";
+import SearchBar from "../../components/search-bar/SearchBar";
 
 const EditKategoriPage = () => {
   const [kategori, setKategori] = useState([]);
@@ -29,7 +27,7 @@ const EditKategoriPage = () => {
 
   const fetchKategoriList = async () => {
     try {
-      const response = await getKategoriList(page, limit, search);
+      const response = await getCategories(page, limit, search);
       setKategori(response.data.result);
       setPage(response.data.page);
       setRows(response.data.totalRows);
@@ -43,42 +41,37 @@ const EditKategoriPage = () => {
     setPage(selected);
   };
 
-  console.log(`result delete`, resultDelete);
-  const handleDelete = async (id) => {
+  const handleDelete = async (id, name) => {
     try {
       const result = await deleteKategori(id);
-      console.log("berhasil");
-      console.log(result.data);
       setResultDelete({ id });
     } catch (error) {
     } finally {
-      Swal.fire("Deleted!", "Your file has been deleted.", "success");
+      Swal.fire("Deleted!", `${name} has been deleted.`, "success");
     }
   };
 
-  const onChangeSearch = (e) => {
+  const onChangeSearch = (search) => {
     setPage(0);
-    setSearch(e.target.value);
+    setSearch(search);
   };
   return (
     <>
       <div className="mb-3 d-flex justify-content-between">
-        <Button
-          onClick={() => {
-            navigate("/kategori-buku");
-          }}
-        >
-          + Tambah Kategori
-        </Button>
-
         <div className="w-25">
-          <Form.Control
-            type="text"
-            className="sm"
-            onChange={onChangeSearch}
-            placeholder="Cari Kategori Buku"
-          />
+          <Button
+            onClick={() => {
+              navigate("/tambah/kategori-buku");
+            }}
+          >
+            + Tambah Kategori
+          </Button>
         </div>
+
+        <SearchBar
+          placeholder="Cari Kategori Buku"
+          onSubmitHandler={onChangeSearch}
+        />
       </div>
       {kategori.length !== 0 ? (
         <>
@@ -113,7 +106,10 @@ const EditKategoriPage = () => {
                               confirmButtonText: "Yes, delete it!",
                             }).then((result) => {
                               if (result.isConfirmed) {
-                                handleDelete(kategori.pk_categoryid);
+                                handleDelete(
+                                  kategori.pk_categoryid,
+                                  kategori.category_name
+                                );
                               }
                             });
                           }}
