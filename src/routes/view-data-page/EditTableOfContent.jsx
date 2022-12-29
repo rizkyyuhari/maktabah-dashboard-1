@@ -3,7 +3,9 @@ import { Button, Form, InputGroup } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
 import {
   deleteSubKategori,
+  deleteTableOfContent,
   getSubCategories,
+  getTableOfContent,
 } from "../../network/lib/book-endpoint";
 import ReactPaginate from "react-paginate";
 import "./coba.css";
@@ -14,7 +16,7 @@ import SearchBar from "../../components/search-bar/SearchBar";
 import { useContext } from "react";
 import { BookContext } from "../../components/context/BookContext";
 
-const EditSubKategori = () => {
+const EditTableOfContent = () => {
   const [kategori, setKategori] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -31,7 +33,7 @@ const EditSubKategori = () => {
 
   const fetchKategoriList = async () => {
     try {
-      const response = await getSubCategories(page, limit, search);
+      const response = await getTableOfContent(page, limit);
       setKategori(response.data.result);
       setPage(response.data.page);
       setRows(response.data.totalRows);
@@ -52,11 +54,11 @@ const EditSubKategori = () => {
 
   const handleDelete = async (id) => {
     try {
-      const result = await deleteSubKategori(id);
+      const result = await deleteTableOfContent(id);
       setResultDelete({ id });
     } catch (error) {
     } finally {
-      Swal.fire("Deleted!", "Your file has been deleted.", "success");
+      Swal.fire("Deleted!", "Berhasil Hapus Bab", "success");
     }
   };
   console.log("kattegoru", kategori);
@@ -70,17 +72,12 @@ const EditSubKategori = () => {
         <div className="w-25">
           <Button
             onClick={() => {
-              navigate("/tambah/sub-kategori-buku");
+              navigate("/tambah/table-of-content");
             }}
           >
-            + Tambah Sub Kategori
+            + Tambah Table Of Content
           </Button>
         </div>
-
-        <SearchBar
-          placeholder="Cari Sub Kategori Buku"
-          onSubmitHandler={onSubmitHandler}
-        />
       </div>
       {kategori.length !== 0 ? (
         <>
@@ -88,61 +85,72 @@ const EditSubKategori = () => {
             <thead>
               <tr>
                 <th>No</th>
-                <th>Kategori</th>
-                <th>Sub Kategori</th>
-                <th>Actions</th>
+                <th>Buku</th>
+                <th>Bab</th>
+                <th>Halaman</th>
+                <th>action</th>
               </tr>
             </thead>
             <tbody>
-              {kategori.map((kategori, index) => (
-                <tr key={kategori.pk_subcategoryid}>
-                  <td>{index + 1}</td>
-                  <td>{kategori.category_name}</td>
-                  <td>{kategori.sub_category_name}</td>
-                  <td>
-                    {
-                      <div className="red">
-                        <Link
-                          className="mr-3"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            navigate("/update/sub-kategori-buku", {
-                              state: {
-                                category_name: kategori.category_name,
-                                sub_category_name: kategori.sub_category_name,
-                                pk_subcategoryid: kategori.pk_subcategoryid,
-                              },
-                            });
-                          }}
-                        >
-                          {<AiFillEdit color="rgb(255,165,0)" size={"25px"} />}
-                        </Link>
-                        <Link
-                          onClick={() => {
-                            Swal.fire({
-                              title: "Are you sure?",
-                              text: "You won't be able to revert this!",
-                              icon: "warning",
-                              showCancelButton: true,
-                              confirmButtonColor: "#3085d6",
-                              cancelButtonColor: "#d33",
-                              confirmButtonText: "Yes, delete it!",
-                            }).then((result) => {
-                              setTrigger(result);
-                              if (result.isConfirmed) {
-                                console.log(kategori.pk_subcategoryid);
-                                handleDelete(kategori.pk_subcategoryid);
-                              }
-                            });
-                          }}
-                        >
-                          {<AiFillDelete color="#dc3545" size={"25px"} />}
-                        </Link>
-                      </div>
-                    }
-                  </td>
-                </tr>
-              ))}
+              {kategori.map((kategori, index) => {
+                return (
+                  <tr key={kategori.pk_subcategoryid}>
+                    <td>{index + 1}</td>
+                    <td>{kategori.title}</td>
+                    <td>{kategori.text}</td>
+                    <td>{kategori.page}</td>
+                    <td>
+                      {
+                        <div className="red">
+                          <Link
+                            className="mr-3"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate("/update/table-of-content", {
+                                state: {
+                                  pk_tblofcontent: kategori.pk_tblofcontent,
+                                  text: kategori.text,
+                                  sub: kategori.sub,
+                                  page: kategori.page,
+                                },
+                              });
+                            }}
+                          >
+                            {
+                              <AiFillEdit
+                                color="rgb(255,165,0)"
+                                size={"25px"}
+                              />
+                            }
+                          </Link>
+                          <Link
+                            onClick={() => {
+                              Swal.fire({
+                                title: "Are you sure?",
+                                text: "You won't be able to revert this!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Yes, delete it!",
+                              }).then((result) => {
+                                setTrigger(result);
+                                if (result.isConfirmed) {
+                                  handleDelete(
+                                    kategori.pk_tblofcontent.toString()
+                                  );
+                                }
+                              });
+                            }}
+                          >
+                            {<AiFillDelete color="#dc3545" size={"25px"} />}
+                          </Link>
+                        </div>
+                      }
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
           <p>
@@ -177,4 +185,4 @@ const EditSubKategori = () => {
   );
 };
 
-export default EditSubKategori;
+export default EditTableOfContent;

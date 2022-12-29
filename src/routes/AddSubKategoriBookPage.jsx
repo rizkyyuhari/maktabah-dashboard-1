@@ -2,13 +2,13 @@ import { useContext, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { BookContext } from "../components/context/BookContext";
-import { addSubCategories, getCategories } from "../network/lib/book-endpoint";
+import { addSubCategories } from "../network/lib/book-endpoint";
 
 const defaultValue = {
   subKategori: "",
   id_category_book: "",
 };
-const SubKategoriBuku = () => {
+const AddSubKategoriBookPage = () => {
   const [forms, setForms] = useState(defaultValue);
   const [errors, setErrors] = useState({});
   const { bookData, setTrigger } = useContext(BookContext);
@@ -114,4 +114,4 @@ const SubKategoriBuku = () => {
   );
 };
 
-export default SubKategoriBuku;
+export default AddSubKategoriBookPage;

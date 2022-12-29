@@ -23,9 +23,15 @@ const config = {
   spellcheck: false,
 };
 
-const RichTextEditor = ({ setValue }) => {
+const RichTextEditor = ({ setValue, value }) => {
   const editor = useRef(null);
-  return <JoditEditor ref={editor} onChange={(content) => setValue(content)} />;
+  return (
+    <JoditEditor
+      value={value}
+      ref={editor}
+      onChange={(content) => setValue(content)}
+    />
+  );
 };
 
 export default RichTextEditor;

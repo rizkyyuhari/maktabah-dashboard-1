@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { BookContext } from "../components/context/BookContext";
 import { addCategories } from "../network/lib/book-endpoint";
 
-const KategoriBuku = () => {
+const AddKategoriBookPage = () => {
   const [form, setForm] = useState({ category_name: "" });
   const [errors, setErrors] = useState({});
   const { setTrigger } = useContext(BookContext);
@@ -61,8 +61,6 @@ const KategoriBuku = () => {
           });
         }
       })();
-
-      console.log("berhasil");
     }
   };
 
@@ -91,4 +89,4 @@ const KategoriBuku = () => {
   );
 };
 
-export default KategoriBuku;
+export default AddKategoriBookPage;

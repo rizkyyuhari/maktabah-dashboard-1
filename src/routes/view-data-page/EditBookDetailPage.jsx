@@ -1,27 +1,29 @@
 import { useEffect, useState } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Button, Form, InputGroup } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import { deleteKategori, getCategories } from "../../network/lib/book-endpoint";
+import {
+  deleteBook,
+  getBookDetailPagination,
+  getSubCategories,
+} from "../../network/lib/book-endpoint";
 import ReactPaginate from "react-paginate";
 import "./coba.css";
 import { Link, useNavigate } from "react-router-dom";
-import { AiFillEdit, AiFillDelete } from "react-icons/ai";
+import { AiFillEdit, AiFillDelete, AiOutlineSearch } from "react-icons/ai";
 import Swal from "sweetalert2";
 import SearchBar from "../../components/search-bar/SearchBar";
 import { useContext } from "react";
 import { BookContext } from "../../components/context/BookContext";
 
-const EditKategoriPage = () => {
-  const [kategori, setKategori] = useState([]);
+const EditBookDetailPage = () => {
+  const [bookDetail, setBookDetail] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [pages, setPages] = useState(0);
   const [rows, setRows] = useState(0);
   const [resultDelete, setResultDelete] = useState({});
   const [search, setSearch] = useState("");
-
-  const { setTrigger } = useContext(BookContext);
-  console.table(kategori);
+  const { setTriggerBk } = useContext(BookContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,8 +32,8 @@ const EditKategoriPage = () => {
 
   const fetchKategoriList = async () => {
     try {
-      const response = await getCategories(page, limit, search);
-      setKategori(response.data.result);
+      const response = await getBookDetailPagination(page, limit, search);
+      setBookDetail(response.data.result);
       setPage(response.data.page);
       setRows(response.data.totalRows);
       setPages(response.data.totalPage);
@@ -44,53 +46,57 @@ const EditKategoriPage = () => {
     setPage(selected);
   };
 
-  const handleDelete = async (id, name) => {
-    try {
-      const result = await deleteKategori(id);
-      setResultDelete({ id });
-    } catch (error) {
-    } finally {
-      Swal.fire("Deleted!", `${name} has been deleted.`, "success");
-    }
-  };
-
-  const onChangeSearch = (search) => {
+  const onSubmitHandler = (search) => {
     setPage(0);
     setSearch(search);
   };
+
+  const handleDelete = async (id) => {
+    try {
+      const result = await deleteBook(id);
+      console.log("berhasil");
+      console.log(result.data);
+      setResultDelete({ id });
+    } catch (error) {
+    } finally {
+      Swal.fire("Deleted!", "Your file has been deleted.", "success");
+    }
+  };
+  console.log("bookdetail", bookDetail);
   return (
     <>
       <div className="mb-3 d-flex justify-content-between">
         <div className="w-25">
           <Button
             onClick={() => {
-              navigate("/tambah/kategori-buku");
+              navigate("/tambah/buku");
             }}
           >
-            + Tambah Kategori
+            + Tambah Buku
           </Button>
         </div>
 
-        <SearchBar
-          placeholder="Cari Kategori Buku"
-          onSubmitHandler={onChangeSearch}
-        />
+        <SearchBar placeholder="Cari Buku" onSubmitHandler={onSubmitHandler} />
       </div>
-      {kategori.length !== 0 ? (
+      {bookDetail.length !== 0 ? (
         <>
           <Table striped bordered hover>
             <thead>
               <tr>
                 <th>No</th>
-                <th>Kategori Buku</th>
+                <th>Title</th>
+                <th>Creator</th>
+                <th>Total Halaman</th>
                 <th>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {kategori.map((kategori, index) => (
-                <tr key={kategori.pk_categoryid}>
+              {bookDetail.map((kategori, index) => (
+                <tr key={kategori.pk_bookdetail}>
                   <td>{index + 1}</td>
-                  <td>{kategori.category_name}</td>
+                  <td>{kategori.title}</td>
+                  <td>{kategori.creator}</td>
+                  <td>{kategori.pages}</td>
                   <td>
                     {
                       <div className="red">
@@ -98,15 +104,11 @@ const EditKategoriPage = () => {
                           className="mr-3"
                           onClick={(e) => {
                             e.preventDefault();
-                            navigate(
-                              `/update/kategori-buku?id=${kategori.pk_categoryid}`,
-                              {
-                                state: {
-                                  kategori: kategori.category_name,
-                                  id: kategori.pk_categoryid,
-                                },
-                              }
-                            );
+                            navigate("/update/buku", {
+                              state: {
+                                kategori,
+                              },
+                            });
                           }}
                         >
                           {<AiFillEdit color="rgb(255,165,0)" size={"25px"} />}
@@ -122,12 +124,9 @@ const EditKategoriPage = () => {
                               cancelButtonColor: "#d33",
                               confirmButtonText: "Yes, delete it!",
                             }).then((result) => {
+                              setTriggerBk(result);
                               if (result.isConfirmed) {
-                                setTrigger(result);
-                                handleDelete(
-                                  kategori.pk_categoryid,
-                                  kategori.category_name
-                                );
+                                handleDelete(kategori.pk_bookdetail);
                               }
                             });
                           }}
@@ -173,43 +172,4 @@ const EditKategoriPage = () => {
   );
 };
 
-export default EditKategoriPage;
-
-// import Select from "react-select";
-// import { useState } from "react";
-// import { useEffect } from "react";
-// import { getBookDetail } from "../../network/lib/book-endpoint";
-
-// const optionList = [
-//   { value: "red", label: "Red" },
-//   { value: "green", label: "Green" },
-//   { value: "yellow", label: "Yellow" },
-//   { value: "blue", label: "Blue" },
-//   { value: "white", label: "White" },
-// ];
-// const EditKategoriPage = () => {
-//   const [result, setResult] = useState([]);
-//   const [selectedOptions, setSelectedOptions] = useState();
-//   function handleSelect(data) {
-//     setSelectedOptions(data);
-//   }
-
-//   console.log("selected", selectedOptions);
-//   console.log(result);
-//   useEffect(() => {
-//     getBookDetail().then((response) => setResult(response.data));
-//   }, []);
-//   return (
-//     <>
-//       <h1>asdfsa</h1>
-//       <Select
-//         options={optionList}
-//         value={selectedOptions}
-//         onChange={handleSelect}
-//         isSearchable={true}
-//       />
-//     </>
-//   );
-// };
-
-// export default EditKategoriPage;
+export default EditBookDetailPage;

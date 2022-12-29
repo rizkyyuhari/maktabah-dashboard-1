@@ -3,14 +3,18 @@ import { Button, Form } from "react-bootstrap";
 
 import RichTextEditor from "../components/rich-editor/RichEditor";
 import { BookContext } from "../components/context/BookContext";
-import { addBookContent } from "../network/lib/book-endpoint";
+import {
+  addBookContent,
+  getListOftblofContent,
+} from "../network/lib/book-endpoint";
 import Swal from "sweetalert2";
+import { useEffect } from "react";
 
 const defaultValue = {
   idBook: null,
 };
 
-const BookContent = () => {
+const AddBookContentPage = () => {
   const [forms, setForms] = useState(defaultValue);
   const [errors, setErrors] = useState({});
   const [cateID, setCateID] = useState(null);
@@ -19,6 +23,7 @@ const BookContent = () => {
   const [subCateID, setSubCateID] = useState(null);
   const [page, setPage] = useState(0);
   const [content, setContent] = useState("");
+  const [tableofContent, setTblOfContent] = useState([]);
   const onTextEditorChange = (e) => {
     setContent(e);
   };
@@ -74,6 +79,13 @@ const BookContent = () => {
   const onChangePage = (e) => {
     setPage(e.target.value);
   };
+
+  useEffect(() => {
+    console.log("trigger nih bos");
+    getListOftblofContent(forms.idBook).then((response) =>
+      setTblOfContent(response.data)
+    );
+  }, [forms]);
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -148,9 +160,26 @@ const BookContent = () => {
           <div style={{ color: "red" }}>{errors.idBook}</div>
         </Form.Group>
 
+        {tableofContent.length > 0 && (
+          <Form.Group>
+            <Form.Label>Table Of Content</Form.Label>
+            <Form.Select
+              onChange={(e) => {
+                setPage(parseInt(e.target.value));
+              }}
+            >
+              <option value="">Pilih salah satu</option>
+              {tableofContent.map((tbl) => (
+                <option value={tbl.page}>{tbl.text}</option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        )}
+
         <Form.Group className="mb-3">
           <Form.Label>Page</Form.Label>
           <Form.Control
+            disabled
             type="number"
             min="0"
             value={page}
@@ -171,4 +200,4 @@ const BookContent = () => {
   );
 };
 
-export default BookContent;
+export default AddBookContentPage;

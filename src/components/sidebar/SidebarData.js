@@ -5,41 +5,50 @@ import * as RiIcons from "react-icons/ri";
 
 export const SidebarData = [
   {
-    title: "Manipulasi",
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
-    subNav: [
-      {
-        title: "Kategori Buku",
-        path: "/",
-      },
-    ],
+    title: "Kategori Buku",
+    path: "/",
   },
   {
-    title: "Tambah",
-    icon: <AiIcons.AiFillFileAdd />,
-    iconClosed: <RiIcons.RiArrowDownSFill />,
-    iconOpened: <RiIcons.RiArrowUpSFill />,
-
-    subNav: [
-      {
-        title: "Kategori Buku",
-        path: "/tambah/kategori-buku",
-      },
-      {
-        title: "Sub Kategori Buku",
-        path: "/tambah/sub-kategori-buku",
-      },
-      {
-        title: "Buku",
-        path: "/tambah/buku",
-      },
-      {
-        title: "Isi Konten Buku",
-        path: "/tambah/konten-buku",
-      },
-    ],
+    title: "Sub Kategori",
+    path: "/sub-kategori",
   },
+  {
+    title: "Buku",
+    path: "/book-detail",
+  },
+  {
+    title: "Table of Content",
+    path: "/table-of-content",
+  },
+  {
+    title: "Konten Buku ",
+    path: "/book-content",
+  },
+  // {
+  //   title: "Tambah",
+  //   icon: <AiIcons.AiFillFileAdd />,
+  //   iconClosed: <RiIcons.RiArrowDownSFill />,
+  //   iconOpened: <RiIcons.RiArrowUpSFill />,
+
+  //   subNav: [
+  //     {
+  //       title: "Kategori Buku",
+  //       path: "/tambah/kategori-buku",
+  //     },
+  //     {
+  //       title: "Sub Kategori Buku",
+  //       path: "/tambah/sub-kategori-buku",
+  //     },
+  //     {
+  //       title: "Buku",
+  //       path: "/tambah/buku",
+  //     },
+  //     {
+  //       title: "Isi Konten Buku",
+  //       path: "/tambah/konten-buku",
+  //     },
+  //   ],
+  // },
   {
     title: "Logout",
     path: "/login",
