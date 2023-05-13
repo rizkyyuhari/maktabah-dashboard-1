@@ -112,7 +112,7 @@ const UpdateBookDetailPage = () => {
           });
           Swal.fire({
             icon: "success",
-            text: response.data.message,
+            text: "Berhasil Update Data",
           });
           setTriggerBk(response);
           setFormField(defaultValue);

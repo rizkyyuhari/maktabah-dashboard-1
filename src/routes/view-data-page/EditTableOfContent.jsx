@@ -15,8 +15,22 @@ import Swal from "sweetalert2";
 import SearchBar from "../../components/search-bar/SearchBar";
 import { useContext } from "react";
 import { BookContext } from "../../components/context/BookContext";
-
+import { useSelector, useDispatch } from "react-redux";
+import { getMe } from "../../features/authSlice";
 const EditTableOfContent = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isError } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(getMe());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/");
+    }
+  }, [isError, navigate]);
   const [kategori, setKategori] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -25,7 +39,6 @@ const EditTableOfContent = () => {
   const [resultDelete, setResultDelete] = useState({});
   const [search, setSearch] = useState("");
   const { setTrigger } = useContext(BookContext);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchKategoriList();
@@ -61,7 +74,7 @@ const EditTableOfContent = () => {
       Swal.fire("Deleted!", "Berhasil Hapus Bab", "success");
     }
   };
-  console.log("kattegoru", kategori);
+
   const onChangeSearch = (e) => {
     setPage(0);
     setSearch(e.target.value);
@@ -72,10 +85,10 @@ const EditTableOfContent = () => {
         <div className="w-25">
           <Button
             onClick={() => {
-              navigate("/tambah/table-of-content");
+              navigate("/home/tambah/table-of-content");
             }}
           >
-            + Tambah Table Of Content
+            + Tambah Daftar Isi
           </Button>
         </div>
       </div>
@@ -94,7 +107,7 @@ const EditTableOfContent = () => {
             <tbody>
               {kategori.map((kategori, index) => {
                 return (
-                  <tr key={kategori.pk_subcategoryid}>
+                  <tr key={kategori.pk_bookdetail + index}>
                     <td>{index + 1}</td>
                     <td>{kategori.title}</td>
                     <td>{kategori.text}</td>
@@ -106,7 +119,7 @@ const EditTableOfContent = () => {
                             className="mr-3"
                             onClick={(e) => {
                               e.preventDefault();
-                              navigate("/update/table-of-content", {
+                              navigate("/home/update/table-of-content", {
                                 state: {
                                   pk_tblofcontent: kategori.pk_tblofcontent,
                                   text: kategori.text,
@@ -126,13 +139,14 @@ const EditTableOfContent = () => {
                           <Link
                             onClick={() => {
                               Swal.fire({
-                                title: "Are you sure?",
-                                text: "You won't be able to revert this!",
-                                icon: "warning",
-                                showCancelButton: true,
-                                confirmButtonColor: "#3085d6",
-                                cancelButtonColor: "#d33",
-                                confirmButtonText: "Yes, delete it!",
+                                title: "Apakah anda Yakin?",
+                              text: "Anda tidak akan dapat mengembalika data yang sudah di Hapus!",
+                              icon: "warning",
+                              showCancelButton: true,
+                              cancelButtonText:"Batalkan",
+                              confirmButtonColor: "#3085d6",
+                              cancelButtonColor: "#d33",
+                              confirmButtonText: "Hapus!",
                               }).then((result) => {
                                 setTrigger(result);
                                 if (result.isConfirmed) {

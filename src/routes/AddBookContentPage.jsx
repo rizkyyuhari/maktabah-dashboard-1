@@ -1,6 +1,8 @@
 import { useState, useContext } from "react";
 import { Button, Form } from "react-bootstrap";
-
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getMe } from "../features/authSlice";
 import RichTextEditor from "../components/rich-editor/RichEditor";
 import { BookContext } from "../components/context/BookContext";
 import {
@@ -15,6 +17,20 @@ const defaultValue = {
 };
 
 const AddBookContentPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isError } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(getMe());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/");
+    }
+  }, [isError, navigate]);
+
   const [forms, setForms] = useState(defaultValue);
   const [errors, setErrors] = useState({});
   const [cateID, setCateID] = useState(null);
@@ -24,6 +40,7 @@ const AddBookContentPage = () => {
   const [page, setPage] = useState(0);
   const [content, setContent] = useState("");
   const [tableofContent, setTblOfContent] = useState([]);
+  const [status, setStatus] = useState(true);
   const onTextEditorChange = (e) => {
     setContent(e);
   };
@@ -32,10 +49,6 @@ const AddBookContentPage = () => {
     (book) =>
       book.pk_categoryid === cateID && book.pk_subcategoryid === subCateID
   );
-
-  console.log("cateid", cateID);
-  console.log("subcate", subCateID);
-  console.log("idbook", forms.idBook);
 
   const onChange = (e) => {
     const { name, value } = e.target;
@@ -104,6 +117,7 @@ const AddBookContentPage = () => {
             icon: "success",
             text: response.data.message,
           });
+          navigate("/home/book-content");
         } catch (error) {
           console.log(error);
           Swal.fire({
@@ -162,16 +176,24 @@ const AddBookContentPage = () => {
 
         {tableofContent.length > 0 && (
           <Form.Group>
-            <Form.Label>Table Of Content</Form.Label>
+            <Form.Label>Daftar Isi</Form.Label>
             <Form.Select
               onChange={(e) => {
-                setPage(parseInt(e.target.value));
+                if (e.target.value === "lain") {
+                  setStatus(false);
+                } else {
+                  setPage(parseInt(e.target.value));
+                  setStatus(true);
+                }
               }}
             >
               <option value="">Pilih salah satu</option>
-              {tableofContent.map((tbl) => (
-                <option value={tbl.page}>{tbl.text}</option>
+              {tableofContent.map((tbl, index) => (
+                <option key={tbl.page + index} value={tbl.page}>
+                  {tbl.text}
+                </option>
               ))}
+              <option value="lain">Lainnya</option>
             </Form.Select>
           </Form.Group>
         )}
@@ -179,7 +201,7 @@ const AddBookContentPage = () => {
         <Form.Group className="mb-3">
           <Form.Label>Page</Form.Label>
           <Form.Control
-            disabled
+            disabled={status ? true : false}
             type="number"
             min="0"
             value={page}

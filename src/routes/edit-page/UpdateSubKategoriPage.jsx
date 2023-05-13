@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useContext } from "react";
 import { Form, Button } from "react-bootstrap";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { BookContext } from "../../components/context/BookContext";
 import { updateSubKategori } from "../../network/lib/book-endpoint";
 
 const UpdateSubKategoriPage = () => {
   const { bookData } = useContext(BookContext);
+  const navigate = useNavigate();
   const { state } = useLocation();
   const { category_name, sub_category_name, pk_subcategoryid } = state;
 
@@ -34,8 +35,9 @@ const UpdateSubKategoriPage = () => {
       setTrigger(result);
       Swal.fire({
         icon: "success",
-        text: "Berhasil Merubah Nama Kategori Buku!",
+        text: "Berhasil Merubah Nama Sub Kategori Buku!",
       });
+      navigate("/home/sub-kategori");
     } catch (error) {
       console.log(error);
     }

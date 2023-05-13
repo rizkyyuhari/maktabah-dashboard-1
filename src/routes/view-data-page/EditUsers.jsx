@@ -1,42 +1,40 @@
 import { useEffect, useState } from "react";
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import Table from "react-bootstrap/Table";
-import {
-  deleteSubKategori,
-  getSubCategories,
-} from "../../network/lib/book-endpoint";
+import { getListOfUser } from "../../network/lib/book-endpoint";
 import ReactPaginate from "react-paginate";
 import "./coba.css";
 import { Link, useNavigate } from "react-router-dom";
-import { AiFillEdit, AiFillDelete, AiOutlineSearch } from "react-icons/ai";
+import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import Swal from "sweetalert2";
 import SearchBar from "../../components/search-bar/SearchBar";
 import { useContext } from "react";
 import { BookContext } from "../../components/context/BookContext";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch,useSelector } from "react-redux";
 import { getMe } from "../../features/authSlice";
-const EditSubKategori = () => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { isError } = useSelector((state) => state.auth);
+const EditUsers = () => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { isError } = useSelector((state) => state.auth);
+  
+    useEffect(() => {
+      dispatch(getMe());
+    }, [dispatch]);
+  
+    useEffect(() => {
+      if (isError) {
+        navigate("/");
+      }
+    }, [isError, navigate]);
 
-  useEffect(() => {
-    dispatch(getMe());
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (isError) {
-      navigate("/");
-    }
-  }, [isError, navigate]);
-
-  const [kategori, setKategori] = useState([]);
+  const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
   const [pages, setPages] = useState(0);
   const [rows, setRows] = useState(0);
   const [resultDelete, setResultDelete] = useState({});
   const [search, setSearch] = useState("");
+
   const { setTrigger } = useContext(BookContext);
 
   useEffect(() => {
@@ -45,8 +43,9 @@ const EditSubKategori = () => {
 
   const fetchKategoriList = async () => {
     try {
-      const response = await getSubCategories(page, limit, search);
-      setKategori(response.data.result);
+      const response = await getListOfUser(page, limit, search);
+      console.log("response", response);
+      setUsers(response.data.result);
       setPage(response.data.page);
       setRows(response.data.totalRows);
       setPages(response.data.totalPage);
@@ -59,23 +58,20 @@ const EditSubKategori = () => {
     setPage(selected);
   };
 
-  const onSubmitHandler = (search) => {
+  //   const handleDelete = async (id, name) => {
+  //     try {
+  //       const result = await deleteKategori(id);
+  //       setResultDelete({ id });
+  //       setTrigger(result);
+  //     } catch (error) {
+  //     } finally {
+  //       Swal.fire("Deleted!", `${name} has been deleted.`, "success");
+  //     }
+  //   };
+
+  const onChangeSearch = (search) => {
     setPage(0);
     setSearch(search);
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      const result = await deleteSubKategori(id);
-      setResultDelete({ id });
-    } catch (error) {
-    } finally {
-      Swal.fire("Deleted!", "Your file has been deleted.", "success");
-    }
-  };
-  const onChangeSearch = (e) => {
-    setPage(0);
-    setSearch(e.target.value);
   };
   return (
     <>
@@ -83,35 +79,34 @@ const EditSubKategori = () => {
         <div className="w-25">
           <Button
             onClick={() => {
-              navigate("/home/tambah/sub-kategori-buku");
+              navigate("/home/tambah/users");
             }}
           >
-            + Tambah Sub Kategori
+            + Tambah user
           </Button>
         </div>
 
-        <SearchBar
-          placeholder="Cari Sub Kategori Buku"
-          onSubmitHandler={onSubmitHandler}
-        />
+        <SearchBar placeholder="Cari Users" onSubmitHandler={onChangeSearch} />
       </div>
-      {kategori.length !== 0 ? (
+      {users.length !== 0 ? (
         <>
           <Table striped bordered hover>
             <thead>
               <tr>
                 <th>No</th>
-                <th>Kategori</th>
-                <th>Sub Kategori</th>
-                <th>Actions</th>
+                <th>Nama</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {kategori.map((kategori, index) => (
-                <tr key={kategori.pk_subcategoryid}>
+              {users.map((user, index) => (
+                <tr key={user.uuid}>
                   <td>{index + 1}</td>
-                  <td>{kategori.category_name}</td>
-                  <td>{kategori.sub_category_name}</td>
+                  <td>{user.name}</td>
+                  <td>{user.email}</td>
+                  <td>{user.role}</td>
                   <td>
                     {
                       <div className="red">
@@ -119,36 +114,39 @@ const EditSubKategori = () => {
                           className="mr-3"
                           onClick={(e) => {
                             e.preventDefault();
-                            navigate("/home/update/sub-kategori-buku", {
-                              state: {
-                                category_name: kategori.category_name,
-                                sub_category_name: kategori.sub_category_name,
-                                pk_subcategoryid: kategori.pk_subcategoryid,
-                              },
-                            });
+                            // navigate(
+                            //   `/update/kategori-buku?id=${kategori.pk_categoryid}`,
+                            //   {
+                            //     state: {
+                            //       kategori: kategori.category_name,
+                            //       id: kategori.pk_categoryid,
+                            //     },
+                            //   }
+                            // );
                           }}
                         >
                           {<AiFillEdit color="rgb(255,165,0)" size={"25px"} />}
                         </Link>
                         <Link
-                          onClick={() => {
-                            Swal.fire({
-                              title: "Apakah anda Yakin?",
-                              text: "Anda tidak akan dapat mengembalikan data yang sudah di Hapus!",
-                              icon: "warning",
-                              showCancelButton: true,
-                              cancelButtonText:"Batalkan",
-                              confirmButtonColor: "#3085d6",
-                              cancelButtonColor: "#d33",
-                              confirmButtonText: "Hapus!",
-                            }).then((result) => {
-                              setTrigger(result);
-                              if (result.isConfirmed) {
-                                console.log(kategori.pk_subcategoryid);
-                                handleDelete(kategori.pk_subcategoryid);
-                              }
-                            });
-                          }}
+                        //   onClick={() => {
+                        //     Swal.fire({
+                        //       title: "Are you sure?",
+                        //       text: "You won't be able to revert this!",
+                        //       icon: "warning",
+                        //       showCancelButton: true,
+                        //       confirmButtonColor: "#3085d6",
+                        //       cancelButtonColor: "#d33",
+                        //       confirmButtonText: "Yes, delete it!",
+                        //     }).then((result) => {
+                        //       if (result.isConfirmed) {
+                        //         console.log("delete berhasil");
+                        //         handleDelete(
+                        //           kategori.pk_categoryid,
+                        //           kategori.category_name
+                        //         );
+                        //       }
+                        //     });
+                        //   }}
                         >
                           {<AiFillDelete color="#dc3545" size={"25px"} />}
                         </Link>
@@ -191,4 +189,4 @@ const EditSubKategori = () => {
   );
 };
 
-export default EditSubKategori;
+export default EditUsers;

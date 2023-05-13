@@ -7,6 +7,9 @@ import { BookContext } from "../components/context/BookContext";
 import { addTblOfContent } from "../network/lib/book-endpoint";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import { getMe } from "../features/authSlice";
 const defaultValue = {
   page: 0,
   text: "",
@@ -14,7 +17,20 @@ const defaultValue = {
 };
 
 const AddTableOfContent = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { isError } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(getMe());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/");
+    }
+  }, [isError, navigate]);
+
   const [data, setData] = useState(defaultValue);
   const [rootID, setRoodID] = useState("");
   const [anak, setAnak] = useState([]);
@@ -119,9 +135,12 @@ const AddTableOfContent = () => {
             Swal.fire({
               icon: "success",
               text: "Berhasil Menambahkan Table Of Content",
-            }).finally((response) => navigate("/table-of-content"));
+            }).finally((response) => navigate("/home/table-of-content"));
           } catch (error) {
-            console.log(error);
+            Swal.fire({
+            icon: "error",
+            text: error.response.data.message,
+          });
           }
         })();
       }}
@@ -129,7 +148,7 @@ const AddTableOfContent = () => {
       <Form.Group>
         <Form.Label>Buku</Form.Label>
         <Form.Select name="id_category_book" onChange={onChangeBook}>
-          <option value="">Pilih Kategori</option>
+          <option value="">Pilih Buku</option>
           {bookDetail.map((book) => (
             <option key={book.pk_bookdetail} value={book.pk_bookdetail}>
               {book.title}

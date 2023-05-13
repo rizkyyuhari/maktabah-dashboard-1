@@ -5,15 +5,19 @@ import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { BrowserRouter } from "react-router-dom";
 import { BookProvider } from "./components/context/BookContext";
+import { store } from "./app/store";
+import { Provider } from "react-redux";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <BookProvider>
-        <App />
-      </BookProvider>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <BookProvider>
+          <App />
+        </BookProvider>
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );
 

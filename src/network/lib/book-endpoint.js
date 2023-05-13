@@ -14,6 +14,10 @@ export function getCategories(page, limit, search) {
     .then((response) => response);
 }
 
+export function getListOfUser() {
+  return axiosClient.get(`/users`);
+}
+
 export function addSubCategories(data) {
   return axiosClient.post("/sub-categories", data).then((response) => response);
 }
@@ -97,4 +101,18 @@ export function deleteBook(id) {
 
 export function getListOftblofContent(id) {
   return axiosClient.get(`/coba?id=${id}`).then((response) => response);
+}
+
+export async function createUser(data) {
+  return await axiosClient({
+    url: "/users",
+    method: "POST",
+    data: data,
+  });
+}
+
+export function updatePublish(id) {
+  return axiosClient
+    .patch(`/publish?pk_bookdetail=${id}`)
+    .then((response) => response);
 }

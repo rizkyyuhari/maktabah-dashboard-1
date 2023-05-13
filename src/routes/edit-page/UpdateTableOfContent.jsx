@@ -12,7 +12,7 @@ const UpdateTableOfContent = () => {
   const navigate = useNavigate();
   const { state } = useLocation();
   const { pk_tblofcontent, text, sub, page } = state;
-  console.log("tblofconten", pk_tblofcontent);
+
   const defaultValue = {
     page: 0,
     text: text,
@@ -127,7 +127,7 @@ const UpdateTableOfContent = () => {
             Swal.fire({
               icon: "success",
               text: "Berhasil Menambahkan Table Of Content",
-            }).finally((response) => navigate("/table-of-content"));
+            }).finally((response) => navigate("/home/table-of-content"));
           } catch (error) {
             console.log(error);
           }

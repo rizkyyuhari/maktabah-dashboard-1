@@ -17,41 +17,63 @@ import UpdateBookContentPage from "./routes/edit-page/UpdateBookContentPage";
 import AddTableOfContent from "./routes/AddTableOfContent";
 import EditTableOfContent from "./routes/view-data-page/EditTableOfContent";
 import UpdateTableOfContent from "./routes/edit-page/UpdateTableOfContent";
+import Login from "./components/login/Login";
 
+import EditUsers from "./routes/view-data-page/EditUsers";
+import AddUser from "./routes/AddUser";
+import Home from "./routes/Home";
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Sidebar />}>
-        <Route path="/book-detail" element={<EditBookDetailPage />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/home" element={<Sidebar />}>
+
         <Route index element={<EditKategoriPage />} />
-        <Route path="/sub-kategori" element={<EditSubKategori />} />
-        <Route path="tambah/kategori-buku" element={<AddKategoriBookPage />} />
-        <Route
-          path="tambah/sub-kategori-buku"
-          element={<AddSubKategoriBookPage />}
-        />
-        <Route path="/book-content" element={<EditBookContentPage />} />
-        <Route path="tambah/buku" element={<AddBookDetailPage />} />
-        <Route path="tambah/konten-buku" element={<AddBookContentPage />} />
-        <Route path="/update/kategori-buku" element={<UpdateKategoriPage />} />
-        <Route
-          path="/update/sub-kategori-buku"
-          element={<UpdateSubKategoriPage />}
-        />
-        <Route path="table-of-content" element={<EditTableOfContent />} />
-        <Route path="/update/buku" element={<UpdateBookDetailPage />} />
-        <Route path="/update/konten-buku" element={<UpdateBookContentPage />} />
-        <Route path="tambah/table-of-content" element={<AddTableOfContent />} />
+        <Route path="/home/users" element={<EditUsers />} />
+        <Route path="/home/book-detail" element={<EditBookDetailPage />} />
+        <Route path="/home/sub-kategori" element={<EditSubKategori />} />
 
         <Route
-          path="update/table-of-content"
+          path="/home/tambah/kategori-buku"
+          element={<AddKategoriBookPage />}
+        />
+        <Route path="/home/tambah/users" element={<AddUser />} />
+        <Route
+          path="/home/tambah/sub-kategori-buku"
+          element={<AddSubKategoriBookPage />}
+        />
+        <Route path="/home/book-content" element={<EditBookContentPage />} />
+        <Route path="/home/tambah/buku" element={<AddBookDetailPage />} />
+        <Route
+          path="/home/tambah/konten-buku"
+          element={<AddBookContentPage />}
+        />
+        <Route
+          path="/home/update/kategori-buku"
+          element={<UpdateKategoriPage />}
+        />
+        <Route
+          path="/home/update/sub-kategori-buku"
+          element={<UpdateSubKategoriPage />}
+        />
+        <Route path="/home/table-of-content" element={<EditTableOfContent />} />
+        <Route path="/home/update/buku" element={<UpdateBookDetailPage />} />
+        <Route
+          path="/home/update/konten-buku"
+          element={<UpdateBookContentPage />}
+        />
+        <Route
+          path="/home/tambah/table-of-content"
+          element={<AddTableOfContent />}
+        />
+
+        <Route
+          path="/home/update/table-of-content"
           element={<UpdateTableOfContent />}
         />
       </Route>
     </Routes>
   );
 }
-
-
 
 export default App;

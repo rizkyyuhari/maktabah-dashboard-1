@@ -5,13 +5,14 @@ import RichTextEditor from "../../components/rich-editor/RichEditor";
 import { BookContext } from "../../components/context/BookContext";
 import { updateBookContent } from "../../network/lib/book-endpoint";
 import Swal from "sweetalert2";
-import { useLocation } from "react-router-dom";
+import { useLocation,useNavigate } from "react-router-dom";
 
 const defaultValue = {
   idBook: null,
 };
 
 const UpdateBookContentPage = () => {
+  const navigate = useNavigate()
   const { state } = useLocation();
   const { kategori } = state;
   const [forms, setForms] = useState(defaultValue);
@@ -68,6 +69,7 @@ const UpdateBookContentPage = () => {
             icon: "success",
             text: "success Update Konten Buku",
           });
+          navigate("/home/book-content")
         } catch (error) {
           console.log(error);
           Swal.fire({

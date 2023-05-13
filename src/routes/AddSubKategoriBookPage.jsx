@@ -1,14 +1,32 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import Swal from "sweetalert2";
 import { BookContext } from "../components/context/BookContext";
 import { addSubCategories } from "../network/lib/book-endpoint";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
+import { getMe } from "../features/authSlice";
 const defaultValue = {
   subKategori: "",
   id_category_book: "",
 };
 const AddSubKategoriBookPage = () => {
+  const navigate = useNavigate()
+  const dispatch = useDispatch();
+
+  const { isError } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(getMe());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/");
+    }
+  }, [isError, navigate]);
+
   const [forms, setForms] = useState(defaultValue);
   const [errors, setErrors] = useState({});
   const { bookData, setTrigger } = useContext(BookContext);
@@ -58,8 +76,9 @@ const AddSubKategoriBookPage = () => {
           Swal.fire({
             icon: "success",
             text: response.data.message,
-          });
+          }).then((response) => navigate("/home/sub-kategori"));
           setTrigger(response);
+          navigate("/home/sub-kategori")
         } catch (error) {
           Swal.fire({
             icon: "error",

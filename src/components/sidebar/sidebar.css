@@ -1,3 +1,21 @@
 .main {
     display: flex;
 }
+
+.divisi {
+    display: flex;
+    flex-direction: column;
+}
+
+.topbar {
+    background-color: #15171c;
+    min-height: 8vh;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 10px;
+}
+
+.sayhi {
+    color: white;
+}

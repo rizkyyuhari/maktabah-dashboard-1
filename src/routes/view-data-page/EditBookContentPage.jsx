@@ -12,9 +12,24 @@ import "./coba.css";
 import { Link, useNavigate } from "react-router-dom";
 import { AiFillEdit, AiFillDelete } from "react-icons/ai";
 import Swal from "sweetalert2";
-import SearchBar from "../../components/search-bar/SearchBar";
+import { useDispatch, useSelector } from "react-redux";
+import { getMe } from "../../features/authSlice";
 
 const EditBookContentPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isError } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(getMe());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/");
+    }
+  }, [isError, navigate]);
+
   const [kategori, setKategori] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -22,9 +37,6 @@ const EditBookContentPage = () => {
   const [rows, setRows] = useState(0);
   const [resultDelete, setResultDelete] = useState({});
   const [search, setSearch] = useState("");
-
-  console.table(`from book content`, kategori);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchKategoriList();
@@ -61,14 +73,13 @@ const EditBookContentPage = () => {
     setSearch(search);
   };
 
-  console.log("kategori", kategori);
   return (
     <>
       <div className="mb-3 d-flex justify-content-between">
         <div className="w-25">
           <Button
             onClick={() => {
-              navigate("/tambah/konten-buku");
+              navigate("/home/tambah/konten-buku");
             }}
           >
             + Tambah Konten Buku
@@ -88,59 +99,67 @@ const EditBookContentPage = () => {
               </tr>
             </thead>
             <tbody>
-              {kategori.map((kategori, index) => (
-                <tr key={kategori.pk_categoryid}>
-                  <td>{index + 1}</td>
-                  <td>{kategori.title}</td>
-                  <td>{kategori.page}</td>
-                  <td>
-                    {kategori.book_content.length > 20
-                      ? kategori.book_content.substring(0, 20) + "..."
-                      : kategori.book_content}
-                  </td>
-                  <td>
-                    {
-                      <div className="red">
-                        <Link
-                          className="mr-3"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            navigate("/update/konten-buku", {
-                              state: {
-                                kategori,
-                              },
-                            });
-                          }}
-                        >
-                          {<AiFillEdit color="rgb(255,165,0)" size={"25px"} />}
-                        </Link>
-                        <Link
-                          onClick={() => {
-                            Swal.fire({
-                              title: "Are you sure?",
-                              text: "You won't be able to revert this!",
-                              icon: "warning",
-                              showCancelButton: true,
-                              confirmButtonColor: "#3085d6",
-                              cancelButtonColor: "#d33",
-                              confirmButtonText: "Yes, delete it!",
-                            }).then((result) => {
-                              if (result.isConfirmed) {
-                                handleDelete(
-                                  kategori.pk_bookdetail,
-                                  kategori.page
-                                );
-                              }
-                            });
-                          }}
-                        >
-                          {<AiFillDelete color="#dc3545" size={"25px"} />}
-                        </Link>
-                      </div>
-                    }
-                  </td>
-                </tr>
-              ))}
+              {kategori.map((kategori, index) => {
+                return (
+                  <tr key={kategori.pk_bookdetail + index}>
+                    <td>{index + 1}</td>
+                    <td>{kategori.title}</td>
+                    <td>{kategori.page}</td>
+                    <td>
+                      {kategori.book_content.length > 20
+                        ? kategori.book_content.substring(0, 20) + "..."
+                        : kategori.book_content}
+                    </td>
+                    <td>
+                      {
+                        <div className="red">
+                          <Link
+                            className="mr-3"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              navigate("/home/update/konten-buku", {
+                                state: {
+                                  kategori,
+                                },
+                              });
+                            }}
+                          >
+                            {
+                              <AiFillEdit
+                                color="rgb(255,165,0)"
+                                size={"25px"}
+                              />
+                            }
+                          </Link>
+                          <Link
+                            onClick={() => {
+                              Swal.fire({
+                                title: "Apakah anda Yakin?",
+                                text: "Anda tidak akan dapat mengembalika data yang sudah di Hapus!",
+                                icon: "warning",
+                                showCancelButton: true,
+                                cancelButtonText: "Batalkan",
+                                confirmButtonColor: "#3085d6",
+                                cancelButtonColor: "#d33",
+                                confirmButtonText: "Hapus!",
+                              }).then((result) => {
+                                if (result.isConfirmed) {
+                                  handleDelete(
+                                    kategori.pk_bookdetail,
+                                    kategori.page
+                                  );
+                                }
+                              });
+                            }}
+                          >
+                            {<AiFillDelete color="#dc3545" size={"25px"} />}
+                          </Link>
+                        </div>
+                      }
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </Table>
           <p>

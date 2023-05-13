@@ -10,8 +10,24 @@ import Swal from "sweetalert2";
 import SearchBar from "../../components/search-bar/SearchBar";
 import { useContext } from "react";
 import { BookContext } from "../../components/context/BookContext";
+import { useSelector, useDispatch } from "react-redux";
+import { getMe } from "../../features/authSlice";
 
 const EditKategoriPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isError } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(getMe());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/");
+    }
+  }, [isError, navigate]);
+
   const [kategori, setKategori] = useState([]);
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -21,8 +37,6 @@ const EditKategoriPage = () => {
   const [search, setSearch] = useState("");
 
   const { setTrigger } = useContext(BookContext);
-  console.table(kategori);
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchKategoriList();
@@ -48,6 +62,7 @@ const EditKategoriPage = () => {
     try {
       const result = await deleteKategori(id);
       setResultDelete({ id });
+      setTrigger(result);
     } catch (error) {
     } finally {
       Swal.fire("Deleted!", `${name} has been deleted.`, "success");
@@ -64,7 +79,7 @@ const EditKategoriPage = () => {
         <div className="w-25">
           <Button
             onClick={() => {
-              navigate("/tambah/kategori-buku");
+              navigate("/home/tambah/kategori-buku");
             }}
           >
             + Tambah Kategori
@@ -99,7 +114,7 @@ const EditKategoriPage = () => {
                           onClick={(e) => {
                             e.preventDefault();
                             navigate(
-                              `/update/kategori-buku?id=${kategori.pk_categoryid}`,
+                              `/home/update/kategori-buku?id=${kategori.pk_categoryid}`,
                               {
                                 state: {
                                   kategori: kategori.category_name,
@@ -114,16 +129,17 @@ const EditKategoriPage = () => {
                         <Link
                           onClick={() => {
                             Swal.fire({
-                              title: "Are you sure?",
-                              text: "You won't be able to revert this!",
+                              title: "Apakah anda Yakin?",
+                              text: "Anda tidak akan dapat mengembalikan data yang sudah di Hapus!",
                               icon: "warning",
                               showCancelButton: true,
+                              cancelButtonText:"Batalkan",
                               confirmButtonColor: "#3085d6",
                               cancelButtonColor: "#d33",
-                              confirmButtonText: "Yes, delete it!",
+                              confirmButtonText: "Hapus!",
                             }).then((result) => {
                               if (result.isConfirmed) {
-                                setTrigger(result);
+                                console.log("delete berhasil");
                                 handleDelete(
                                   kategori.pk_categoryid,
                                   kategori.category_name

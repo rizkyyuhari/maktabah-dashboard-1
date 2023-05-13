@@ -5,24 +5,32 @@ import * as RiIcons from "react-icons/ri";
 
 export const SidebarData = [
   {
-    title: "Kategori Buku",
-    path: "/",
-  },
-  {
-    title: "Sub Kategori",
-    path: "/sub-kategori",
-  },
-  {
-    title: "Buku",
-    path: "/book-detail",
-  },
-  {
-    title: "Table of Content",
-    path: "/table-of-content",
-  },
-  {
-    title: "Konten Buku ",
-    path: "/book-content",
+    title: "Menu",
+    icon: <RiIcons.RiBarChartHorizontalFill />,
+    iconClosed: <RiIcons.RiArrowDownSFill />,
+    iconOpened: <RiIcons.RiArrowUpSFill />,
+    subNav: [
+      {
+        title: "Kategori",
+        path: "/home",
+      },
+      {
+        title: "Sub Kategori",
+        path: "/home/sub-kategori",
+      },
+      {
+        title: "Bibliografi",
+        path: "/home/book-detail",
+      },
+      {
+        title: "Daftar Isi",
+        path: "/home/table-of-content",
+      },
+      {
+        title: "Isi Konten",
+        path: "/home/book-content",
+      },
+    ],
   },
   // {
   //   title: "Tambah",
@@ -49,10 +57,26 @@ export const SidebarData = [
   //     },
   //   ],
   // },
+  // {
+  //   title: "Super Admin",
+  //   icon: <RiIcons.RiUserFill />,
+  //   iconClosed: <RiIcons.RiArrowDownSFill />,
+  //   iconOpened: <RiIcons.RiArrowUpSFill />,
+  //   subNav: [
+  //     {
+  //       title: "User",
+  //       path: "/home/users",
+  //     },
+  //   ],
+  // },
   {
-    title: "Logout",
-    path: "/login",
-    icon: <IoIcons.IoMdLogOut />,
+    title: "User",
+    icon: <RiIcons.RiUserFill />,
+    path: "/home/users",
+  },
+  {
+    title: "Pengaturan",
+    icon: <RiIcons.RiSettings5Line />,
   },
 ];
 

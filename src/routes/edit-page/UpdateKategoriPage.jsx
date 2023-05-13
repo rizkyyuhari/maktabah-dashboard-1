@@ -30,7 +30,7 @@ const UpdateKategoriPage = () => {
             Swal.fire({
               icon: "success",
               text: "Berhasil Merubah Nama Kategori Buku!",
-            }).then((response) => navigate("/"));
+            }).then((response) => navigate("/home"));
           } catch (error) {
             if (error.response.status === 409) {
               Swal.fire({

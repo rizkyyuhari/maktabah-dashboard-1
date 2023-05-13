@@ -1,10 +1,28 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
+import { Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { BookContext } from "../components/context/BookContext";
 import { addCategories } from "../network/lib/book-endpoint";
 
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { getMe } from "../features/authSlice";
 const AddKategoriBookPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isError } = useSelector((state) => state.auth);
+  console.log("add kate");
+  useEffect(() => {
+    dispatch(getMe());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isError) {
+      navigate("/");
+    }
+  }, [isError, navigate]);
+
   const [form, setForm] = useState({ category_name: "" });
   const [errors, setErrors] = useState({});
   const { setTrigger } = useContext(BookContext);
@@ -48,11 +66,15 @@ const AddKategoriBookPage = () => {
           const response = await addCategories({
             category_name: form.category_name,
           });
+          setTrigger(response);
           Swal.fire({
             icon: "success",
             text: response.data.message,
+          }).then((response) => {
+            console.log("ketrigger ga sih");
+            navigate("/home");
           });
-          setTrigger(response);
+
           setForm({ category_name: "" });
         } catch (error) {
           Swal.fire({
